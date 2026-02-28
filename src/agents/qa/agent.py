@@ -1,0 +1,2 @@
+class QAAgent:
+    pass
