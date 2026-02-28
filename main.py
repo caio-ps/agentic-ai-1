@@ -1,4 +1,5 @@
-from src.agents.manager import ManagerAgent
+import ManagerAgent
+
 from src.core.llm import LLM
 
 
