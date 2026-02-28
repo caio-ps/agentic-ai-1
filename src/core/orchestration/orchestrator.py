@@ -17,14 +17,19 @@ class Orchestrator:
         self.devops = DevOpsAgent(llm=shared_llm)
 
     def run(self, user_input: str) -> str:
+        print("[ORCHESTRATOR] Step 1/7: Sending user input to ManagerAgent")
         manager_output = self.manager.run(user_input)
         requirements = manager_output  # V1: assume requirements are clear.
 
+        print("[ORCHESTRATOR] Step 2/7: Sending requirements to DeveloperAgent")
         html = self.developer.run(requirements)
+        print("[ORCHESTRATOR] Step 3/7: Sending generated HTML to QAAgent")
         qa_feedback = self.qa.run(html)
         qa_decision = self._extract_qa_decision(qa_feedback)
+        print(f"[ORCHESTRATOR] Step 4/7: QA decision = {qa_decision}")
 
         if qa_decision == "NEEDS_CHANGES":
+            print("[ORCHESTRATOR] Step 5/7: Requesting one revision from DeveloperAgent")
             revision_input = (
                 "Original requirements:\n"
                 f"{requirements}\n\n"
@@ -33,8 +38,10 @@ class Orchestrator:
                 "Please update the HTML accordingly."
             )
             html = self.developer.run(revision_input)
+            print("[ORCHESTRATOR] Step 6/7: Re-running QAAgent after revision")
             qa_feedback = self.qa.run(html)
 
+        print("[ORCHESTRATOR] Step 7/7: Writing artifacts and requesting DevOps instructions")
         workspace_dir = Path("workspace")
         docker_dir = Path("docker")
         workspace_dir.mkdir(parents=True, exist_ok=True)

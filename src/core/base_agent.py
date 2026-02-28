@@ -10,4 +10,8 @@ class BaseAgent:
         self.llm = llm or LLM()
 
     def run(self, user_input: str) -> str:
-        return self.llm.generate(system_prompt=self.system_prompt, user_input=user_input)
+        print(f"[{self.role_name.upper()}] Starting execution...")
+        print(f"[{self.role_name.upper()}] Input length: {len(user_input)} characters")
+        response = self.llm.generate(system_prompt=self.system_prompt, user_input=user_input)
+        print(f"[{self.role_name.upper()}] Execution completed.")
+        return response
