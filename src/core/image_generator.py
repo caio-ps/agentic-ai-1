@@ -22,4 +22,7 @@ class ImageGenerator:
         image_base64 = response.data[0].b64_json
         if not image_base64:
             raise ValueError("Image generation returned empty image data.")
-        return base64.b64decode(image_base64)
+        image_bytes = base64.b64decode(image_base64)
+        if not image_bytes:
+            raise ValueError("Image generation returned zero-byte image content.")
+        return image_bytes

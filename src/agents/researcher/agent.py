@@ -12,23 +12,30 @@ class ResearcherAgent(BaseAgent):
         super().__init__(
             role_name="researcher",
             system_prompt=(
-                "You are a web research specialist.\n\n"
-                "Your job is to:\n"
-                "- Receive structured website requirements.\n"
-                "- Identify relevant themes, industry standards, competitors, and "
-                "best practices.\n"
-                "- Perform real internet research.\n"
-                "- Produce a structured research dossier including:\n"
-                "    - Market references\n"
-                "    - Common content patterns\n"
-                "    - Recommended sections\n"
-                "    - SEO considerations\n"
-                "    - Suggested messaging angles\n"
-                "- Summarize findings clearly and objectively.\n"
-                "- Provide references with source names and URLs.\n"
-                "- Do not design or generate HTML.\n"
-                "- Focus only on research and insights.\n"
-                "- Keep output concise and structured."
+                "You are a strategic web research specialist.\n\n"
+                "Use provided real web search findings to produce high-quality "
+                "strategic research.\n"
+                "Analyze competitor websites and extract:\n"
+                "- Common page structure\n"
+                "- Messaging patterns\n"
+                "- Hero section patterns\n"
+                "- Call-to-action patterns\n"
+                "Identify industry-specific keywords.\n"
+                "Identify differentiation opportunities.\n"
+                "Provide SEO keyword clusters.\n"
+                "Provide examples of strong headlines from market leaders.\n\n"
+                "Return JSON only in this exact structure:\n"
+                "{\n"
+                "  \"market_patterns\": [...],\n"
+                "  \"competitor_analysis\": [...],\n"
+                "  \"seo_keywords\": [...],\n"
+                "  \"headline_examples\": [...],\n"
+                "  \"differentiation_opportunities\": [...]\n"
+                "}\n\n"
+                "Do not generate HTML.\n"
+                "Do not include markdown.\n"
+                "Use concrete, specific findings and include source URLs within "
+                "relevant items."
             ),
             llm=llm,
         )
@@ -38,8 +45,8 @@ class ResearcherAgent(BaseAgent):
         print(f"[{self.role_name.upper()}] Starting execution...")
         print(f"[{self.role_name.upper()}] Input length: {len(user_input)} characters")
 
-        topics = self._extract_key_topics(user_input)
-        search_queries = self._build_search_queries(topics)
+        personas_and_pain_points = self._extract_personas_and_pain_points(user_input)
+        search_queries = self._build_search_queries(personas_and_pain_points)
 
         aggregated_results_parts: list[str] = []
         for index, query in enumerate(search_queries, start=1):
@@ -51,44 +58,66 @@ class ResearcherAgent(BaseAgent):
         dossier_input = (
             "Structured website requirements:\n"
             f"{user_input}\n\n"
+            "Extracted personas and pain points:\n"
+            f"{personas_and_pain_points}\n\n"
             "Web search findings:\n"
             f"{aggregated_results}\n\n"
-            "Create a structured research dossier based only on the findings above. "
-            "Include references with URLs."
+            "Produce strategic research JSON using only these real findings."
         )
         response = self.llm.generate(system_prompt=self.system_prompt, user_input=dossier_input)
         print(f"[{self.role_name.upper()}] Execution completed.")
         return response
 
-    def _extract_key_topics(self, requirements: str) -> list[str]:
-        topic_prompt = (
-            "Extract up to 5 high-impact web research topics from the requirements. "
-            "Return one topic per line and no extra text."
+    def _extract_personas_and_pain_points(self, requirements: str) -> str:
+        extraction_prompt = (
+            "Extract audience personas and pain points from the requirements.\n"
+            "Return JSON only with this shape:\n"
+            "{\n"
+            "  \"personas\": [\"...\"],\n"
+            "  \"pain_points\": [\"...\"]\n"
+            "}\n"
+            "Use up to 3 personas and up to 5 pain points."
         )
-        raw_topics = self.llm.generate(system_prompt=topic_prompt, user_input=requirements)
-        topics = [line.strip("- ").strip() for line in raw_topics.splitlines() if line.strip()]
-        unique_topics: list[str] = []
+        return self.llm.generate(system_prompt=extraction_prompt, user_input=requirements)
+
+    def _build_search_queries(self, personas_and_pain_points: str) -> list[str]:
+        query_prompt = (
+            "Based on the personas and pain points, generate 5 high-impact web "
+            "search queries for strategic website research.\n"
+            "Queries must cover:\n"
+            "- competitor website examples\n"
+            "- hero/messaging/CTA patterns\n"
+            "- industry keywords and SEO terms\n"
+            "- differentiation strategies\n"
+            "Return one query per line and no extra text."
+        )
+        raw_queries = self.llm.generate(
+            system_prompt=query_prompt,
+            user_input=personas_and_pain_points,
+        )
+        queries = [line.strip("- ").strip() for line in raw_queries.splitlines() if line.strip()]
+
+        unique_queries: list[str] = []
         seen: set[str] = set()
-        for topic in topics:
-            normalized = topic.lower()
+        for query in queries:
+            normalized = query.lower()
             if normalized in seen:
                 continue
             seen.add(normalized)
-            unique_topics.append(topic)
-        return unique_topics
+            unique_queries.append(query)
 
-    def _build_search_queries(self, topics: list[str]) -> list[str]:
-        selected_topics = topics[:5]
-        queries = [f"{topic} website best practices" for topic in selected_topics]
-        if len(queries) < 3:
-            fallback_queries = [
-                "website information architecture best practices",
-                "responsive web design accessibility checklist",
-                "landing page content structure best practices",
-            ]
-            for query in fallback_queries:
-                if query not in queries:
-                    queries.append(query)
-                if len(queries) >= 3:
-                    break
-        return queries[:5]
+        fallback_queries = [
+            "top industry competitor website homepage examples",
+            "best website hero section messaging patterns",
+            "high-converting website call to action patterns",
+            "industry SEO keyword clusters",
+            "website differentiation strategy examples",
+        ]
+        for query in fallback_queries:
+            if len(unique_queries) >= 5:
+                break
+            if query.lower() not in seen:
+                unique_queries.append(query)
+                seen.add(query.lower())
+
+        return unique_queries[:5]

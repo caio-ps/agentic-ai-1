@@ -86,8 +86,12 @@ class Orchestrator:
             )
 
         written_paths: list[Path] = []
+        protected_image_paths = {path.resolve() for path in generated_image_paths}
         for relative_path, content in files.items():
             target_path = workspace_dir / relative_path
+            if target_path.resolve() in protected_image_paths:
+                print(f"[ORCHESTRATOR] Preserved generated image file (skip overwrite): {target_path}")
+                continue
             target_path.parent.mkdir(parents=True, exist_ok=True)
             target_path.write_text(content, encoding="utf-8")
             written_paths.append(target_path)
@@ -127,8 +131,8 @@ class Orchestrator:
         latest_input = initial_input
         latest_output = initial_input
 
-        for iteration in range(1, 2):
-            print(f"[ORCHESTRATOR] ProductManager iteration {iteration}/1")
+        for iteration in range(1, 4):
+            print(f"[ORCHESTRATOR] ProductManager iteration {iteration}/3")
             latest_output = self.product_manager.run(latest_input)
             self._log_stage_output("ProductManagerAgent", latest_output)
 
@@ -147,7 +151,7 @@ class Orchestrator:
                 )
 
         print(
-            "[ORCHESTRATOR] Reached 1 ProductManager iteration without "
+            "[ORCHESTRATOR] Reached 3 ProductManager iterations without "
             "REQUIREMENTS_READY. Proceeding with latest output."
         )
         return latest_output
