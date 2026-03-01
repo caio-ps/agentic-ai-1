@@ -30,5 +30,8 @@ htmlcov/
 *.log
 docker-compose.override.yml
 
+# Generated workspace artifacts
+workspace/
+
 # Keep dependency lock/manifest files tracked
 !requirements.txt
