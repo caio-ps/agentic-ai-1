@@ -3,57 +3,101 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sociedade Esportiva Palmeiras</title>
+    <title>Crypto Management Platform</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Open+Sans:wght@400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&family=Roboto:wght@400&display=swap" rel="stylesheet">
 </head>
 <body>
-    <header>
-        <nav id="navbar">
-            <ul>
-                <li><a href="#hero">Home</a></li>
-                <li><a href="#team">Team</a></li>
-                <li><a href="#fans">Fans</a></li>
-                <li><a href="#shop">Shop</a></li>
-                <li><a href="#news">News</a></li>
-                <li><a href="#live">Live</a></li>
-                <li><a href="#community">Community</a></li>
-                <li><a href="#contact">Contact</a></li>
-            </ul>
-        </nav>
+    <header class="navbar">
+        <div class="container">
+            <a href="#" class="navbar__brand">CryptoPlatform</a>
+            <button class="navbar__toggle" aria-label="Toggle navigation">☰</button>
+            <nav>
+                <ul class="navbar__list">
+                    <li class="navbar__item"><a href="#" class="navbar__link">Home</a></li>
+                    <li class="navbar__item"><a href="#" class="navbar__link">About</a></li>
+                    <li class="navbar__item"><a href="#" class="navbar__link">Services</a></li>
+                    <li class="navbar__item"><a href="#" class="navbar__link">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
     </header>
+
     <main>
-        <section id="hero">
-            <img src="assets/images/hero.png" alt="Palmeiras player in action">
+        <section class="hero">
+            <div class="container">
+                <h1 class="hero__headline">Easily Manage Your Digital Assets Securely</h1>
+                <p class="hero__subheadline">Trusted by millions for secure and seamless crypto transactions.</p>
+                <ul class="hero__bullets">
+                    <li>Intuitive design for all experience levels.</li>
+                    <li>Strong security measures.</li>
+                    <li>Diverse asset support.</li>
+                </ul>
+                <a href="#" class="btn btn--cta">Get Started Today</a>
+                <img src="assets/images/hero-image.png" alt="Crypto Platform Interface" class="hero__image">
+            </div>
         </section>
-        <section id="news">
-            <img src="assets/images/latest-news.png" alt="Latest News">
+
+        <section class="features">
+            <div class="container">
+                <h2 class="features__headline">Handling Crypto Has Never Been Easier</h2>
+                <p class="features__subheadline">Discover why we're the preferred choice for thousands.</p>
+                <ul class="features__bullets">
+                    <li>User-friendly interface inspired by industry leaders.</li>
+                    <li>Real-time data and insights at your fingertips.</li>
+                    <li>Multi-layer security protection.</li>
+                </ul>
+                <a href="#" class="btn btn--secondary">Explore Features</a>
+                <img src="assets/images/features-image.png" alt="Cryptocurrency Features" class="features__image">
+            </div>
         </section>
-        <section id="matches">
-            <h2>Upcoming Matches</h2>
+
+        <section class="testimonials">
+            <div class="container">
+                <h2 class="testimonials__headline">What Our Users Say</h2>
+                <p class="testimonials__subheadline">Hear from our satisfied community members.</p>
+                <ul class="testimonials__bullets">
+                    <li>Positive user experiences.</li>
+                    <li>Stories of enhanced portfolio management.</li>
+                </ul>
+                <a href="#" class="btn btn--secondary">Join Our Community</a>
+                <img src="assets/images/testimonials-image.png" alt="User Testimonials" class="testimonials__image">
+            </div>
         </section>
-        <section id="quick-links">
-            <h2>Quick Links</h2>
+
+        <section class="security">
+            <div class="container">
+                <h2 class="security__headline">Your Security is Our Priority</h2>
+                <p class="security__subheadline">Robust measures to keep your assets safe.</p>
+                <ul class="security__bullets">
+                    <li>24/7 monitoring and customer support.</li>
+                    <li>Blockchain-based protection mechanisms.</li>
+                </ul>
+                <a href="#" class="btn btn--secondary">Learn More About Security</a>
+                <img src="assets/images/security.png" alt="Security Features" class="security__image">
+            </div>
         </section>
-        <section id="team">
-            <img src="assets/images/team-profile.png" alt="Team Profile">
-        </section>
-        <section id="fans">
-            <img src="assets/images/fan-stories.png" alt="Fan Stories">
-        </section>
-        <section id="shop">
-            <img src="assets/images/merchandise.png" alt="Merchandise">
-        </section>
-        <section id="live">
-            <img src="assets/images/live-stream.png" alt="Live Stream">
-        </section>
-        <section id="community">
-            <img src="assets/images/community-event.png" alt="Community Event">
-        </section>
-        <section id="contact">
-            <h2>Contact</h2>
+
+        <section class="cta">
+            <div class="container">
+                <h2 class="cta__headline">Start Your Crypto Journey With Us</h2>
+                <p class="cta__subheadline">Sign up and get started in minutes.</p>
+                <ul class="cta__bullets">
+                    <li>Simple registration process.</li>
+                    <li>Instant access to all features.</li>
+                </ul>
+                <a href="#" class="btn btn--cta">Sign Up Now</a>
+                <img src="assets/images/cta-image.png" alt="Call to Action" class="cta__image">
+            </div>
         </section>
     </main>
-<script src="js/main.js"></script>
+
+    <footer class="footer">
+        <div class="container">
+            <p class="footer__text">CryptoPlatform &copy; 2023. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
 </body>
 </html>
