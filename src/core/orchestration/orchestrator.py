@@ -127,8 +127,8 @@ class Orchestrator:
         latest_input = initial_input
         latest_output = initial_input
 
-        for iteration in range(1, 6):
-            print(f"[ORCHESTRATOR] ProductManager iteration {iteration}/5")
+        for iteration in range(1, 2):
+            print(f"[ORCHESTRATOR] ProductManager iteration {iteration}/1")
             latest_output = self.product_manager.run(latest_input)
             self._log_stage_output("ProductManagerAgent", latest_output)
 
@@ -147,7 +147,7 @@ class Orchestrator:
                 )
 
         print(
-            "[ORCHESTRATOR] Reached 5 ProductManager iterations without "
+            "[ORCHESTRATOR] Reached 1 ProductManager iteration without "
             "REQUIREMENTS_READY. Proceeding with latest output."
         )
         return latest_output
@@ -186,7 +186,8 @@ class Orchestrator:
         return project_json, qa_feedback
 
     def _generate_design_images(self, design_spec: str) -> list[Path]:
-        assets_dir = Path("assets/images")
+        workspace_dir = Path("workspace")
+        assets_dir = workspace_dir / "assets" / "images"
         assets_dir.mkdir(parents=True, exist_ok=True)
         image_paths: list[Path] = []
 
@@ -210,27 +211,34 @@ class Orchestrator:
                 print(f"[ORCHESTRATOR] WARNING: Missing image prompt at index {index}. Skipping.")
                 continue
 
-            filename = self._safe_image_filename(image_def.get("filename"), index)
-            target_path = assets_dir / filename
+            target_path = self._workspace_image_path(assets_dir, image_def.get("filename"), index)
+            if target_path is None:
+                print(f"[ORCHESTRATOR] WARNING: Invalid image filename at index {index}. Skipping.")
+                continue
 
             try:
-                print(f"[ORCHESTRATOR] Generating image {index}: {filename}")
+                print(f"[ORCHESTRATOR] Generating image {index}: {target_path}")
                 image_bytes = self.image_generator.generate_image(prompt.strip())
                 target_path.write_bytes(image_bytes)
                 image_paths.append(target_path)
                 print(f"[ORCHESTRATOR] Image generated: {target_path}")
             except Exception as exc:  # noqa: BLE001
-                print(f"[ORCHESTRATOR] WARNING: Failed to generate {filename}: {exc}")
+                print(f"[ORCHESTRATOR] WARNING: Failed to generate {target_path}: {exc}")
 
         return image_paths
 
     @staticmethod
-    def _safe_image_filename(raw_filename: object, index: int) -> str:
-        if isinstance(raw_filename, str) and raw_filename.strip():
-            name = Path(raw_filename.strip()).name
-            if name:
-                return name
-        return f"generated_{index}.png"
+    def _workspace_image_path(assets_dir: Path, raw_filename: object, index: int) -> Path | None:
+        if not isinstance(raw_filename, str) or not raw_filename.strip():
+            return assets_dir / f"generated_{index}.png"
+
+        relative_name = Path(raw_filename.strip())
+        if relative_name.is_absolute() or ".." in relative_name.parts:
+            return None
+
+        target_path = assets_dir / relative_name
+        target_path.parent.mkdir(parents=True, exist_ok=True)
+        return target_path
 
     @staticmethod
     def _dockerfile_content() -> str:
