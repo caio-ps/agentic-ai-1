@@ -10,8 +10,10 @@ A sequential multi-agent pipeline that takes a website idea and generates:
 
 - refined product requirements
 - market/competitor research
-- content strategy
+- editorial website content structure
+- technical architecture specification
 - design system
+- implementation task plan
 - generated images
 - multi-file front-end project
 - QA validation feedback
@@ -37,29 +39,47 @@ Current orchestrated flow in `src/core/orchestration/orchestrator.py`:
    - expects `REQUIREMENTS_READY` to finalize structured requirements
 2. `ResearcherAgent`
    - performs real web searches via `WebSearchService`
-   - returns strategic research JSON
+   - returns strategic insights plus factual knowledge-base JSON
 3. `ContentDesignerAgent`
-   - builds conversion-oriented content structure
-4. `DesignerAgent`
-   - produces structured `design_system` JSON
-5. `ImageGenerator` (service stage in orchestrator)
+   - generates site structure and editorial website content from research
+4. `ArchitectAgent`
+   - produces a structured technical architecture specification
+5. `DesignerAgent`
+   - produces structured `design_system` JSON plus image generation specs
+6. `PlannerAgent`
+   - breaks the implementation into executable development tasks
+7. `ImageGenerator` (service stage in orchestrator)
    - generates image files from design prompts into `workspace/assets/images/`
-6. `DeveloperAgent`
-   - generates multi-file website JSON (`files` map)
-7. `QAAgent`
-   - validates project structure and quality (up to 3 QA revision iterations)
-8. `DevOpsAgent`
+8. `DeveloperAgent`
+   - generates multi-file website JSON by rendering `site_structure`
+9. `QAAgent`
+   - validates structure, accessibility, responsiveness, architecture alignment, and rendered site content, including deterministic site_structure-to-HTML checks (up to 3 QA revision iterations)
+10. `DevOpsAgent`
    - provides deployment instructions and Docker guidance
+
+Primary orchestrator artifacts:
+
+- `product_requirements`
+- `research_output`
+- `site_structure`
+- `architecture_spec`
+- `design_spec`
+- `development_tasks`
+- `generated_files`
+
+The orchestrator now passes these artifacts between stages as structured JSON payloads and logs artifact summaries at every stage for easier debugging.
 
 ## Project Structure
 
 ```text
 src/
   agents/
+    architect/
     product_manager/
     researcher/
     content_designer/
     designer/
+    planner/
     developer/
     qa/
     devops/
@@ -102,6 +122,8 @@ pip install -r requirements.txt
 export OPENAI_API_KEY="your_api_key_here"
 ```
 
+The development tooling in `requirements.txt` also includes `pytest`, `black`, `flake8`, and `pre-commit`.
+
 ## Run
 
 ```bash
@@ -122,18 +144,79 @@ Then it executes the full agent workflow and prints stage logs plus final output
 - Generated images: `workspace/assets/images/`
 - Dockerfile for static serving: `docker/Dockerfile`
 
+## Testing And Local Quality Checks
+
+Run the full test suite:
+
+```bash
+make test
+```
+
+Run the full suite with coverage using the helper script:
+
+```bash
+bash scripts/run_tests.sh
+```
+
+Run lint checks locally:
+
+```bash
+make lint
+```
+
+Format the codebase locally:
+
+```bash
+make format
+```
+
+You can also run the tools directly without `make`:
+
+```bash
+python3 -m pytest -q
+python3 -m flake8 src tests main.py
+python3 -m black src tests main.py
+```
+
+To run tests with coverage manually after activating the virtual environment:
+
+```bash
+python -m pytest --cov=src --cov-report=term-missing
+```
+
+## Pre-commit Hooks
+
+Install the Git pre-commit hooks locally:
+
+```bash
+python3 -m pre_commit install
+```
+
+Run all configured hooks manually:
+
+```bash
+python3 -m pre_commit run --all-files
+```
+
+The pre-commit configuration in `.pre-commit-config.yaml` runs:
+
+- `black`
+- `flake8`
+- `pytest`
+
 ## Current Limitations
 
 - Heavy dependency on model output correctness
-- Limited schema enforcement/retries for malformed responses
+- Lightweight schema validation currently covers research, content, architecture, design, and planning outputs
 - No persistent memory/state beyond current run
-- No formal test suite for full orchestration behavior
+- Full end-to-end orchestration still depends on live OpenAI API access outside mocked tests
 
 ## Why This Exists
 
 This codebase is intentionally built as a **hands-on study project** to understand:
 
 - agent role decomposition
+- spec-driven planning workflows
 - orchestration loops and guardrails
 - tool integration (web search, image generation)
 - structured intermediate artifacts across agents

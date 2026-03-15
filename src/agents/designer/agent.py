@@ -1,15 +1,16 @@
 from src.core.base_agent import BaseAgent
-from src.core.llm import LLM
+from src.core.llm import LLMProtocol
+from src.core.schemas import DESIGN_SPEC_SCHEMA
 
 
 class DesignerAgent(BaseAgent):
-    def __init__(self, llm: LLM | None = None) -> None:
+    def __init__(self, llm: LLMProtocol | None = None) -> None:
         super().__init__(
             role_name="designer",
             system_prompt=(
                 "You are a senior UI/UX designer.\n\n"
                 "Your job is to:\n"
-                "- Receive the structured content plan.\n"
+                "- Receive the structured content plan and architecture spec.\n"
                 "- Produce a structured design system for a professional website.\n\n"
                 "Return JSON only in this exact format:\n"
                 "{\n"
@@ -50,7 +51,14 @@ class DesignerAgent(BaseAgent):
                 "      \"cta_section\": \"...\",\n"
                 "      \"footer\": \"...\"\n"
                 "    }\n"
-                "  }\n"
+                "  },\n"
+                "  \"images\": [\n"
+                "    {\n"
+                "      \"filename\": \"...\",\n"
+                "      \"prompt\": \"...\",\n"
+                "      \"alt\": \"...\"\n"
+                "    }\n"
+                "  ]\n"
                 "}\n\n"
                 "Rules:\n"
                 "- Design must follow modern SaaS standards.\n"
@@ -60,10 +68,16 @@ class DesignerAgent(BaseAgent):
                 "- Define button styles explicitly.\n"
                 "- Define hover states.\n"
                 "- Define mobile behavior.\n\n"
+                "- Include 3 to 6 image definitions with implementation-safe "
+                "filenames ending in .png.\n"
+                "- Each image prompt must be production-ready for image generation.\n"
+                "- Ensure filenames are unique and suitable for assets/images/.\n"
                 "Do not generate HTML.\n"
                 "Do not include base64.\n"
                 "No markdown.\n"
                 "No explanations."
             ),
             llm=llm,
+            output_schema=DESIGN_SPEC_SCHEMA,
+            output_format="json",
         )

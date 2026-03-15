@@ -1,9 +1,9 @@
 from src.core.base_agent import BaseAgent
-from src.core.llm import LLM
+from src.core.llm import LLMProtocol
 
 
 class DevOpsAgent(BaseAgent):
-    def __init__(self, llm: LLM | None = None) -> None:
+    def __init__(self, llm: LLMProtocol | None = None) -> None:
         super().__init__(
             role_name="devops",
             system_prompt=(

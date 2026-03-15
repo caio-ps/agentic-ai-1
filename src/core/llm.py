@@ -1,7 +1,18 @@
 import os
 from typing import Any
+from typing import Protocol
 
 from openai import OpenAI
+
+
+class LLMProtocol(Protocol):
+    def generate(
+        self,
+        system_prompt: str,
+        user_input: str,
+        tools: list[dict[str, Any]] | None = None,
+        agent_name: str | None = None,
+    ) -> str: ...
 
 
 class LLM:
@@ -20,7 +31,9 @@ class LLM:
         system_prompt: str,
         user_input: str,
         tools: list[dict[str, Any]] | None = None,
+        agent_name: str | None = None,
     ) -> str:
+        del agent_name
         request: dict[str, Any] = {
             "model": self.model,
             "input": [

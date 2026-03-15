@@ -1,9 +1,10 @@
 from src.core.base_agent import BaseAgent
-from src.core.llm import LLM
+from src.core.llm import LLMProtocol
+from src.core.schemas import PRODUCT_REQUIREMENTS_SCHEMA
 
 
 class ProductManagerAgent(BaseAgent):
-    def __init__(self, llm: LLM | None = None) -> None:
+    def __init__(self, llm: LLMProtocol | None = None) -> None:
         super().__init__(
             role_name="product_manager",
             system_prompt=(
@@ -38,4 +39,6 @@ class ProductManagerAgent(BaseAgent):
                 "Be concise and structured."
             ),
             llm=llm,
+            output_schema=PRODUCT_REQUIREMENTS_SCHEMA,
+            output_format="text",
         )

@@ -1,0 +1,21 @@
+repos:
+  - repo: https://github.com/psf/black
+    rev: 25.1.0
+    hooks:
+      - id: black
+        args: [src, tests, main.py]
+
+  - repo: https://github.com/pycqa/flake8
+    rev: 7.1.1
+    hooks:
+      - id: flake8
+        args: [src, tests, main.py]
+
+  - repo: local
+    hooks:
+      - id: pytest
+        name: pytest
+        entry: python3 -m pytest -q
+        language: system
+        pass_filenames: false
+        always_run: true
