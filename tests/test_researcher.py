@@ -29,4 +29,5 @@ def test_researcher_returns_valid_research_output(
     parsed = json.loads(result)
     validate_schema(parsed, RESEARCH_OUTPUT_SCHEMA)
     assert parsed["knowledge_base"]["topics"]
+    assert parsed["strategic_insights"]["competitor_patterns"][0]["platform"]
     assert len(fake_web_search_service.queries) == 10

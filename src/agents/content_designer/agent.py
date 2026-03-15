@@ -60,7 +60,8 @@ class ContentDesignerAgent(BaseAgent):
                 "Do not generate design specs.\n"
                 "Focus only on site structure and editorial content.\n"
                 "No markdown.\n"
-                "No explanations."
+                "No explanations.\n"
+                "Return ONLY raw JSON. Do not wrap the response in markdown code blocks. Do not include explanations."
             ),
             llm=llm,
             output_schema=SITE_STRUCTURE_SCHEMA,

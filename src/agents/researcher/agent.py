@@ -1,6 +1,7 @@
 import json
 
 from src.core.base_agent import BaseAgent
+from src.core.base_agent import sanitize_llm_output
 from src.core.llm import LLMProtocol
 from src.core.schemas import RESEARCH_OUTPUT_SCHEMA
 from src.core.web_search import WebSearchService
@@ -33,7 +34,13 @@ class ResearcherAgent(BaseAgent):
                 "Return JSON only in this exact structure:\n"
                 "{\n"
                 "  \"strategic_insights\": {\n"
-                "    \"competitor_patterns\": [],\n"
+                "    \"competitor_patterns\": [\n"
+                "      {\n"
+                "        \"platform\": \"\",\n"
+                "        \"key_features\": \"\",\n"
+                "        \"website\": \"\"\n"
+                "      }\n"
+                "    ],\n"
                 "    \"seo_keywords\": [],\n"
                 "    \"messaging_patterns\": []\n"
                 "  },\n"
@@ -51,7 +58,9 @@ class ResearcherAgent(BaseAgent):
                 "}\n\n"
                 "Do not generate HTML.\n"
                 "Do not include markdown.\n"
+                "Return ONLY raw JSON. Do not wrap the response in markdown code blocks. Do not include explanations.\n"
                 "Use concrete, specific findings.\n"
+                "Represent competitor_patterns as structured objects with platform, key_features, and website when available.\n"
                 "Each knowledge topic must contain factual, reusable research.\n"
                 "Each knowledge topic must include source URLs in the sources array."
             ),
@@ -99,7 +108,7 @@ class ResearcherAgent(BaseAgent):
             user_input=dossier_input,
             agent_name=self.role_name,
         )
-        response = self._validate_output(response)
+        response = self._validate_output(response, user_input=dossier_input)
         print(f"[{self.role_name.upper()}] Execution completed.")
         return response
 
@@ -115,7 +124,8 @@ class ResearcherAgent(BaseAgent):
             "}\n"
             "Use up to 3 personas, up to 5 pain points, and 4 to 6 knowledge topics.\n"
             "Knowledge topics should represent factual subjects that website content "
-            "may need to explain."
+            "may need to explain.\n"
+            "Return ONLY raw JSON. Do not wrap the response in markdown code blocks. Do not include explanations."
         )
         return self.llm.generate(
             system_prompt=extraction_prompt,
@@ -200,7 +210,7 @@ class ResearcherAgent(BaseAgent):
     @staticmethod
     def _primary_topic_label(research_scope: str) -> str:
         try:
-            payload = json.loads(research_scope)
+            payload = json.loads(sanitize_llm_output(research_scope))
         except Exception:  # noqa: BLE001
             return "industry"
 

@@ -19,7 +19,7 @@ def test_architecture_schema_rejects_invalid_agent_output(
     architecture_spec_json: str,
 ) -> None:
     agent_output = json.loads(architecture_spec_json)
-    agent_output["architecture_spec"]["components"] = []
+    del agent_output["architecture_spec"]["asset_structure"][0]["directory"]
 
     with pytest.raises(SchemaValidationError):
         validate_schema(agent_output, ARCHITECTURE_SPEC_SCHEMA)

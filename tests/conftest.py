@@ -124,7 +124,16 @@ def research_output_json() -> str:
         {
             "strategic_insights": {
                 "competitor_patterns": [
-                    "Competitors emphasize trust, plain-language navigation, and educational hero sections."
+                    {
+                        "platform": "BeginnerCrypto",
+                        "key_features": "Simplifies complex crypto topics into easy-to-understand language.",
+                        "website": "https://beginnercrypto.io",
+                    },
+                    {
+                        "platform": "CryptoAtlas",
+                        "key_features": "Combines market explainers with side-by-side asset comparisons for new investors.",
+                        "website": "https://cryptoatlas.example",
+                    },
                 ],
                 "seo_keywords": [
                     "bitcoin explained",
@@ -221,17 +230,45 @@ def architecture_spec_json() -> str:
                     "assets/images/",
                 ],
                 "components": [
-                    "site-header",
-                    "hero-section",
-                    "content-section",
-                    "site-footer",
+                    {
+                        "name": "Header",
+                        "directory": "src/components/Header",
+                        "files": ["Header.html", "Header.css", "Header.js"],
+                    },
+                    {
+                        "name": "HeroSection",
+                        "directory": "src/components/HeroSection",
+                        "files": ["HeroSection.html", "HeroSection.css"],
+                    },
+                    {
+                        "name": "ContentSection",
+                        "directory": "src/components/ContentSection",
+                        "files": ["ContentSection.html", "ContentSection.css"],
+                    },
+                    {
+                        "name": "Footer",
+                        "directory": "src/components/Footer",
+                        "files": ["Footer.html", "Footer.css"],
+                    },
                 ],
                 "css_strategy": "Single stylesheet organized by layout, components, and responsive overrides using CSS custom properties.",
                 "javascript_strategy": "Single main.js file for small interactive behavior such as mobile navigation.",
                 "asset_structure": [
-                    "assets/images/hero.png",
-                    "assets/images/blockchain.png",
-                    "assets/images/adoption.png",
+                    {
+                        "type": "CSS",
+                        "directory": "assets/css/",
+                        "files": ["styles.css", "reset.css"],
+                    },
+                    {
+                        "type": "JavaScript",
+                        "directory": "assets/js/",
+                        "files": ["main.js"],
+                    },
+                    {
+                        "type": "Images",
+                        "directory": "assets/images/",
+                        "files": ["hero.png", "blockchain.png", "adoption.png"],
+                    },
                 ],
             }
         }

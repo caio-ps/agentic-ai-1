@@ -29,7 +29,8 @@ class PlannerAgent(BaseAgent):
                 "- Ensure tasks cover structure, styling, behavior, and assets.\n"
                 "- Do not generate code.\n"
                 "- No markdown.\n"
-                "- No explanations outside the JSON."
+                "- No explanations outside the JSON.\n"
+                "Return ONLY raw JSON. Do not wrap the response in markdown code blocks. Do not include explanations."
             ),
             llm=llm,
             output_schema=DEVELOPMENT_TASKS_SCHEMA,

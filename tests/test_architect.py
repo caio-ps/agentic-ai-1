@@ -16,3 +16,5 @@ def test_architect_returns_valid_architecture_spec(
     parsed = json.loads(result)
     validate_schema(parsed, ARCHITECTURE_SPEC_SCHEMA)
     assert parsed["architecture_spec"]["project_structure"]
+    assert parsed["architecture_spec"]["components"][0]["directory"]
+    assert parsed["architecture_spec"]["asset_structure"][0]["directory"]

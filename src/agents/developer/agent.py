@@ -66,7 +66,8 @@ class DeveloperAgent(BaseAgent):
                 "- All image paths must match the file structure.\n"
                 "- Image src values must use assets/images/<provided-filename>.\n"
                 "- No fake image URLs.\n"
-                "- No broken links."
+                "- No broken links.\n"
+                "Return ONLY raw JSON. Do not wrap the response in markdown code blocks. Do not include explanations."
             ),
             llm=llm,
             output_schema=GENERATED_FILES_SCHEMA,

@@ -1,3 +1,6 @@
+from .architecture_schema import ARCHITECTURE_SPEC_SCHEMA
+from .research_schema import RESEARCH_OUTPUT_SCHEMA
+
 NON_EMPTY_STRING = {
     "type": "string",
     "minLength": 1,
@@ -16,47 +19,6 @@ PRODUCT_REQUIREMENTS_SCHEMA = {
         {"pattern": "REQUIREMENTS_READY"},
         {"pattern": r"\?"},
     ],
-}
-
-RESEARCH_OUTPUT_SCHEMA = {
-    "type": "object",
-    "additionalProperties": False,
-    "required": ["strategic_insights", "knowledge_base"],
-    "properties": {
-        "strategic_insights": {
-            "type": "object",
-            "additionalProperties": False,
-            "required": ["competitor_patterns", "seo_keywords", "messaging_patterns"],
-            "properties": {
-                "competitor_patterns": NON_EMPTY_STRING_ARRAY,
-                "seo_keywords": NON_EMPTY_STRING_ARRAY,
-                "messaging_patterns": NON_EMPTY_STRING_ARRAY,
-            },
-        },
-        "knowledge_base": {
-            "type": "object",
-            "additionalProperties": False,
-            "required": ["topics"],
-            "properties": {
-                "topics": {
-                    "type": "array",
-                    "minItems": 1,
-                    "items": {
-                        "type": "object",
-                        "additionalProperties": False,
-                        "required": ["topic", "summary", "key_points", "facts", "sources"],
-                        "properties": {
-                            "topic": NON_EMPTY_STRING,
-                            "summary": NON_EMPTY_STRING,
-                            "key_points": NON_EMPTY_STRING_ARRAY,
-                            "facts": NON_EMPTY_STRING_ARRAY,
-                            "sources": NON_EMPTY_STRING_ARRAY,
-                        },
-                    },
-                }
-            },
-        },
-    },
 }
 
 SITE_STRUCTURE_SCHEMA = {
@@ -101,32 +63,6 @@ SITE_STRUCTURE_SCHEMA = {
                         },
                     },
                 }
-            },
-        }
-    },
-}
-
-ARCHITECTURE_SPEC_SCHEMA = {
-    "type": "object",
-    "additionalProperties": False,
-    "required": ["architecture_spec"],
-    "properties": {
-        "architecture_spec": {
-            "type": "object",
-            "additionalProperties": False,
-            "required": [
-                "project_structure",
-                "components",
-                "css_strategy",
-                "javascript_strategy",
-                "asset_structure",
-            ],
-            "properties": {
-                "project_structure": NON_EMPTY_STRING_ARRAY,
-                "components": NON_EMPTY_STRING_ARRAY,
-                "css_strategy": NON_EMPTY_STRING,
-                "javascript_strategy": NON_EMPTY_STRING,
-                "asset_structure": NON_EMPTY_STRING_ARRAY,
             },
         }
     },

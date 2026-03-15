@@ -19,7 +19,7 @@ def test_research_schema_rejects_invalid_agent_output(
     research_output_json: str,
 ) -> None:
     agent_output = json.loads(research_output_json)
-    del agent_output["knowledge_base"]["topics"][0]["sources"]
+    del agent_output["strategic_insights"]["competitor_patterns"][0]["platform"]
 
     with pytest.raises(SchemaValidationError):
         validate_schema(agent_output, RESEARCH_OUTPUT_SCHEMA)

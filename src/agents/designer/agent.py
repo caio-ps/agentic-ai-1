@@ -75,7 +75,8 @@ class DesignerAgent(BaseAgent):
                 "Do not generate HTML.\n"
                 "Do not include base64.\n"
                 "No markdown.\n"
-                "No explanations."
+                "No explanations.\n"
+                "Return ONLY raw JSON. Do not wrap the response in markdown code blocks. Do not include explanations."
             ),
             llm=llm,
             output_schema=DESIGN_SPEC_SCHEMA,
